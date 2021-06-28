@@ -1,0 +1,60 @@
+{
+    "name": "niyant-test-server",
+    "version": "1.0.0",
+    "description": "",
+    "main": "dist/index.js",
+    "scripts": {
+        "start": "npm run build && node dist/index.js",
+        "dev": "ts-node-dev --no-notify --respawn --transpile-only src/index.ts",
+        "build": "rimraf ./dist && tsc && cp .env dist/ && cd dist && mkdir uploads && cd uploads && mkdir images",
+        "dev:typecheck": "tsc --noEmit --watch",
+        "migrate": "prisma migrate dev --name init --preview-feature",
+        "migrate:reset": "prisma migrate reset --preview-feature",
+        "migrate:deploy": "prisma migrate deploy --preview-feature",
+        "migrate:update": "prisma migrate dev --create-only --preview-feature",
+        "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/niyant02/niyant-test.git"
+    },
+    "author": "niyant02",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/niyant02/niyant-test/issues"
+    },
+    "homepage": "https://github.com/niyant02/niyant-test#readme",
+    "dependencies": {
+        "@prisma/client": "^2.23.0",
+        "bcryptjs": "^2.4.3",
+        "dotenv": "^10.0.0",
+        "express": "^4.17.1",
+        "express-validator": "^6.12.0",
+        "jsonwebtoken": "^8.5.1",
+        "lodash": "^4.17.21",
+        "moment": "^2.29.1",
+        "multer": "^1.4.2",
+        "prisma": "^2.25.0"
+    },
+    "devDependencies": {
+        "@types/bcryptjs": "^2.4.2",
+        "@types/express": "^4.17.12",
+        "@types/jsonwebtoken": "^8.5.2",
+        "@types/lodash": "^4.14.170",
+        "@types/multer": "^1.4.6",
+        "@types/node": "^15.12.5",
+        "@typescript-eslint/eslint-plugin": "^4.28.0",
+        "@typescript-eslint/parser": "^4.28.0",
+        "eslint": "^7.29.0",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-config-standard": "^16.0.3",
+        "eslint-plugin-import": "^2.23.4",
+        "eslint-plugin-node": "^11.1.0",
+        "eslint-plugin-prettier": "^3.4.0",
+        "eslint-plugin-promise": "^5.1.0",
+        "rimraf": "^2.7.1",
+        "ts-node": "^10.0.0",
+        "ts-node-dev": "^1.1.6",
+        "typescript": "^4.3.4"
+    }
+}

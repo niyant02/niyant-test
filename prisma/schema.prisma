@@ -1,0 +1,51 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["filterJson", "orderByAggregateGroup", "orderByRelation", "selectRelationCount", "nApi"]
+}
+
+model User {
+  id         Int        @id @default(autoincrement())
+  name       String     @db.VarChar(255)
+  email      String     @unique
+  password   String     @db.VarChar(255)
+  address    String?    @db.VarChar(255)
+  socialType String?
+  socialId   String?
+  mobile     String?
+  avatar     String?
+  isActive   Boolean    @default(true)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  Property   Property[]
+}
+
+model Property {
+  id            Int             @id @default(autoincrement())
+  propertyName  String
+  location      String
+  latitude      String
+  longitude     String
+  PropertyImage PropertyImage[]
+  createdBy     Int
+  user          User            @relation(fields: [createdBy], references: id)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  deleted       Boolean         @default(false)
+}
+
+model PropertyImage {
+  id         Int      @id @default(autoincrement())
+  propertyId Int
+  property   Property @relation(fields: [propertyId], references: id)
+  image      String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
