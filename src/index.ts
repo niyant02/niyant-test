@@ -7,16 +7,18 @@ import dotenv from 'dotenv';
 import { APP_SECRET, getAuthUser } from './helper';
 import multer from 'multer';
 import fs from 'fs';
-
+import cors from 'cors';
 dotenv.config();
 
 const prisma = new PrismaClient();
 const app = express();
 const router = express.Router();
-const upload = multer({ dest: '/tmp/' });
+const upload = multer({ dest: 'uploads/' });
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cors());
+app.use('/uploads/images', express.static('uploads/images'));
 
 const isValidUser: CustomValidator = (value) => {
     return prisma.user
@@ -51,31 +53,8 @@ router.post(
             });
         }
 
-        const {
-            email,
-            password,
-            name,
-            address = null,
-            mobile = null,
-            avatar = upload.single('avatar') || null,
-        } = req.body;
+        const { email, password, name, address = null, mobile = null, avatar = null } = req.body;
         let hashPassword = await hash(password, 10);
-
-        if (avatar) {
-            let file = 'uploads/images' + '/' + req.file?.originalname;
-            if (req.file) {
-                fs.rename(req.file?.path, file, (err) => {
-                    if (err) {
-                        res.status(500).json({
-                            success: false,
-                            errors: [err],
-                            data: {},
-                            message: 'image not uploaded and user not registered.',
-                        });
-                    }
-                });
-            }
-        }
 
         const user = await prisma.user.create({
             data: {
@@ -114,6 +93,40 @@ router.post(
         }
     },
 );
+
+router.post('/profile', upload.single('avatar'), async (req, res) => {
+    try {
+        let file = 'uploads/images' + '/' + req.file?.originalname;
+        if (req.file) {
+            fs.rename(req.file?.path, file, (err) => {
+                if (err) {
+                    res.status(500).json({
+                        success: false,
+                        errors: [err],
+                        data: {},
+                        message: 'Image upload failed.',
+                    });
+                } else {
+                    res.status(200).json({
+                        success: true,
+                        errors: [],
+                        data: {
+                            imagePath: file,
+                        },
+                        message: 'Image upload successfully.',
+                    });
+                }
+            });
+        }
+    } catch (err) {
+        res.status(400).json({
+            success: false,
+            errors: [err],
+            data: {},
+            message: 'Image upload failed.',
+        });
+    }
+});
 
 router.post(
     '/login',
@@ -433,6 +446,7 @@ router.get('/users', async (req, res) => {
         errors: [],
         data: {
             users: users,
+            totalCount: await prisma.user.count(),
         },
         message: 'Get user list',
     });
@@ -450,6 +464,7 @@ router.get('/properties', async (req, res) => {
         errors: [],
         data: {
             properties: properties,
+            totalCount: await prisma.property.count(),
         },
         message: 'Get property list.',
     });
@@ -477,10 +492,6 @@ router.get('/property/:id', async (req, res) => {
     }
 });
 
-app.use('/', router);
+app.use('/api', router);
 
-const server = app.listen(4000, () =>
-    console.log(`
-🚀 Server ready at: http://localhost:4000
-⭐️ See sample requests: http://pris.ly/e/ts/rest-express#3-using-the-rest-api`),
-);
+const server = app.listen(4000, () => console.log(`🚀 Server ready at: http://localhost:4000`));

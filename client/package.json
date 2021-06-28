@@ -1,11 +1,63 @@
 {
-  "name": "niyant-test-client",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "niyant02",
-  "license": "ISC"
+    "name": "client",
+    "version": "0.1.0",
+    "private": true,
+    "dependencies": {
+        "@ant-design/icons": "^4.6.2",
+        "@testing-library/jest-dom": "^5.11.4",
+        "@testing-library/react": "^11.1.0",
+        "@testing-library/user-event": "^12.1.10",
+        "@types/jest": "^26.0.15",
+        "@types/node": "^12.0.0",
+        "@types/react": "^17.0.0",
+        "@types/react-dom": "^17.0.0",
+        "antd": "^4.16.5",
+        "axios": "^0.21.1",
+        "leaflet": "^1.7.1",
+        "moment": "^2.29.1",
+        "node-sass": "^4.0.0",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2",
+        "react-google-login": "^5.2.2",
+        "react-helmet": "^6.1.0",
+        "react-leaflet": "^3.2.0",
+        "react-router-dom": "^5.2.0",
+        "react-scripts": "4.0.3",
+        "sass-loader": "^12.1.0",
+        "typescript": "^4.1.2",
+        "web-vitals": "^1.0.1"
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "proxy": "http://localhost:4000/api",
+    "devDependencies": {
+        "@types/leaflet": "^1.7.3",
+        "@types/lodash": "^4.14.170",
+        "@types/node-sass": "^4.11.1",
+        "@types/react-helmet": "^6.1.1",
+        "@types/react-router-dom": "^5.1.7",
+        "@types/sass-loader": "^8.0.1"
+    }
 }
