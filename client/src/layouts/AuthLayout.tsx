@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { Layout } from 'antd';
 
 const { Header, Footer, Content } = Layout;
@@ -7,9 +7,9 @@ class AuthLayout extends Component {
     render() {
         return (
             <>
-                <Layout>
+                <Layout className="auth-layout">
                     <Header></Header>
-                    <Content className="auth-layout">{this.props.children}</Content>
+                    <Content>{this.props.children}</Content>
                     <Footer></Footer>
                 </Layout>
             </>

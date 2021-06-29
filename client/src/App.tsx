@@ -1,4 +1,3 @@
-import React from 'react';
 import { ConfigProvider } from 'antd';
 import { createBrowserHistory } from 'history';
 import { Router } from 'react-router-dom';

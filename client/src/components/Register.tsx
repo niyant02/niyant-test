@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Form, Input, Checkbox, Button, Row, Col, Typography, Upload, message } from 'antd';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { Helmet } from 'react-helmet';
@@ -43,8 +43,7 @@ const Register = () => {
                 avatar: imagePath,
             })
             .then((res: any) => {
-                // eslint-disable-next-line
-                const { data, success, message: responseMessage } = res.data;
+                const { success, message: responseMessage } = res.data;
                 if (success) {
                     message.success(responseMessage);
                     history.push('/');

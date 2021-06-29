@@ -1,9 +1,9 @@
 import { Component } from 'react';
 import { Route } from 'react-router-dom';
-import AuthLayout from '../layouts/AuthLayout';
+import AppLayout from '../layouts/AppLayout';
 
-const AuthRoute = ({ ...rest }) => (
-    <AuthLayout>
+const AppRoute = ({ ...rest }) => (
+    <AppLayout>
         <Route
             exact
             {...rest}
@@ -11,7 +11,7 @@ const AuthRoute = ({ ...rest }) => (
                 return <Component {...props} />;
             }}
         />
-    </AuthLayout>
+    </AppLayout>
 );
 
-export default AuthRoute;
+export default AppRoute;

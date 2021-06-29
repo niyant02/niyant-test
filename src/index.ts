@@ -4,10 +4,11 @@ import { compare, hash } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import { body, validationResult, CustomValidator } from 'express-validator';
 import dotenv from 'dotenv';
-import { APP_SECRET, getAuthUser } from './helper';
+import { APP_SECRET, authenticateJWT, getAuthUser } from './helper';
 import multer from 'multer';
 import fs from 'fs';
 import cors from 'cors';
+import { parseInt } from 'lodash';
 dotenv.config();
 
 const prisma = new PrismaClient();
@@ -268,6 +269,7 @@ router.post(
 
 router.post(
     '/create/property',
+    authenticateJWT,
     body('propertyName').notEmpty(),
     body('location').notEmpty(),
     body('latitude').notEmpty(),
@@ -324,8 +326,9 @@ router.post(
         min: 6,
     }),
     body('location').notEmpty(),
-    body('latitude').isLatLong(),
-    body('longitude').isLatLong(),
+    body('latitude').notEmpty(),
+    body('longitude').notEmpty(),
+    authenticateJWT,
     async (req, res) => {
         const errors = validationResult(req);
 
@@ -348,7 +351,7 @@ router.post(
             if (propertyId) {
                 const property = await prisma.property.update({
                     where: {
-                        id: propertyId,
+                        id: parseInt(propertyId),
                     },
                     data: {
                         propertyName,
@@ -379,29 +382,36 @@ router.post(
     },
 );
 
-router.post('/delete/property/:id', async (req, res) => {
+router.post('/delete/property/:id', authenticateJWT, async (req, res) => {
     const propertyId = parseInt(req.params?.id);
 
     if (propertyId) {
-        const property = prisma.property.update({
-            where: {
-                id: propertyId,
-            },
-            data: {
-                deleted: true,
-            },
-        });
-
-        res.status(200).json({
-            success: true,
-            errors: [],
-            data: {},
-            message: 'Property delete successfully.',
-        });
+        await prisma.property
+            .update({
+                where: {
+                    id: propertyId,
+                },
+                data: {
+                    deleted: true,
+                },
+            })
+            .then((response: any) => {
+                res.status(200).json({
+                    success: true,
+                    errors: [],
+                    data: {
+                        property: response,
+                    },
+                    message: 'Property delete successfully.',
+                });
+            })
+            .catch((err: any) => {
+                console.log(err);
+            });
     }
 });
 
-router.get('/me', async (req, res) => {
+router.get('/me', authenticateJWT, async (req, res) => {
     const userId = await getAuthUser(req);
 
     if (userId) {
@@ -434,7 +444,7 @@ router.get('/me', async (req, res) => {
     }
 });
 
-router.get('/users', async (req, res) => {
+router.get('/users', authenticateJWT, async (req, res) => {
     const users = await prisma.user.findMany({
         where: {
             isActive: true,
@@ -452,7 +462,7 @@ router.get('/users', async (req, res) => {
     });
 });
 
-router.get('/properties', async (req, res) => {
+router.get('/properties', authenticateJWT, async (req, res) => {
     const properties = await prisma.property.findMany({
         where: {
             deleted: false,
@@ -470,7 +480,7 @@ router.get('/properties', async (req, res) => {
     });
 });
 
-router.get('/property/:id', async (req, res) => {
+router.get('/property/:id', authenticateJWT, async (req, res) => {
     const propertyId = parseInt(req.params?.id);
 
     if (propertyId) {

@@ -1,16 +1,17 @@
-import React from 'react';
 import { Helmet } from 'react-helmet';
 import { Form, Input, Button, Checkbox, Row, Col, Typography, message } from 'antd';
 import client from '../client';
 import { AUTH_TOKEN, USER } from '../constants';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
+import { GoogleLogin } from 'react-google-login';
 
 const { Item: FormItem } = Form;
 const { Title } = Typography;
 
 const Login = () => {
+    const history = useHistory();
+
     const onFinish = (values: any) => {
-        console.log('Success:', values);
         client
             .post('/login', {
                 email: values.email,
@@ -20,8 +21,38 @@ const Login = () => {
                 const { data, message: responseMessage, success } = res.data;
                 if (success) {
                     message.success(responseMessage);
+                    localStorage.clear();
                     localStorage.setItem(AUTH_TOKEN, data.token);
                     localStorage.setItem(USER, JSON.stringify(data.user));
+                    history.push('/property');
+                } else {
+                    message.error(responseMessage);
+                }
+            })
+            .catch((err: any) => {
+                const { errors } = err.response.data;
+                message.error(errors[0].msg);
+            });
+    };
+
+    const responseGoogle = (response: any) => {
+        console.log(response);
+        const { googleId, profileObj } = response;
+        client
+            .post('/login/google', {
+                email: profileObj.email,
+                socialId: googleId,
+                name: profileObj.name,
+                profile: profileObj.imageUrl,
+            })
+            .then((res: any) => {
+                const { data, message: responseMessage, success } = res.data;
+                if (success) {
+                    message.success(responseMessage);
+                    localStorage.clear();
+                    localStorage.setItem(AUTH_TOKEN, data.token);
+                    localStorage.setItem(USER, JSON.stringify(data.user));
+                    history.push('/property');
                 } else {
                     message.error(responseMessage);
                 }
@@ -68,6 +99,18 @@ const Login = () => {
                                 <Button type="primary" htmlType="submit">
                                     Submit
                                 </Button>
+                            </FormItem>
+
+                            <p className="text-center">OR</p>
+
+                            <FormItem>
+                                <GoogleLogin
+                                    clientId="382135382848-om4c30i4gp1ntf9bncpqgi9lsksjkg2t.apps.googleusercontent.com"
+                                    buttonText="Login"
+                                    onSuccess={responseGoogle}
+                                    onFailure={responseGoogle}
+                                    redirectUri="https://niyant-test.com:3000/callback"
+                                />
                             </FormItem>
 
                             <p>

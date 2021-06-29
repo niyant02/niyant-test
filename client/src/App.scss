@@ -11,10 +11,59 @@ body {
     min-height: 100vh;
 }
 
-.ant-layout-header {
-    background-color: #f0f2f5;
+.auth-layout {
+    .ant-layout-header {
+        background-color: #f0f2f5;
+    }
+}
+
+.bg-white {
+    background-color: #fff !important;
+}
+
+.w-100 {
+    width: 100% !important;
 }
 
 .text-center {
     text-align: center !important;
+}
+
+.logo-container {
+    float: left;
+    background-color: #001529;
+    height: 64px;
+    width: 140px;
+    padding: 6px 0;
+    .anticon {
+        color: #fff;
+        font-size: 32px;
+    }
+}
+
+.leaflet-container {
+    width: 100%;
+    height: 500px;
+}
+
+.tiprow {
+    display: flex;
+}
+
+.tiprow .tipcol_1 {
+    min-width: 100px;
+    text-align: left;
+    padding-right: 10px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+}
+.tipcol {
+    min-width: 120px;
+    opacity: 0.9;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    min-width: 180px;
+}
+.leaflet-container .leaflet-control-attribution {
+    display: none;
 }
